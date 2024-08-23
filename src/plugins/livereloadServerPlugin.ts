@@ -5,13 +5,14 @@ import { noopPlugin } from './noopPlugin';
 //
 //
 
-export let wsServers: Record<number, import('ws').WebSocketServer> = {};
-export let wsUsers: Record<number, number> = {};
+export let wsServers: Record<string, import('ws').WebSocketServer> = {};
+export let wsUsers: Record<string, number> = {};
 
 //
 //
 
-export let WebSocketServer: typeof import('ws').WebSocketServer | null = null as any;
+export let WebSocketServer: typeof import('ws').WebSocketServer | null =
+  null as any;
 
 //
 //
@@ -21,7 +22,9 @@ async function createWebSocketServer(port: number) {
     WebSocketServer = (await import('ws')).WebSocketServer;
   }
 
-  if (!wsServers[port]) {
+  const PORT_STR = port + '';
+
+  if (!wsServers[PORT_STR]) {
     const newServer = new WebSocketServer!({ port });
     let wsClients: WebSocket[] = [];
 
@@ -33,27 +36,32 @@ async function createWebSocketServer(port: number) {
       });
     });
 
-    wsServers[port] = newServer;
+    wsServers[PORT_STR] = newServer;
   }
 
-  if (!wsUsers[port]) {
-    wsUsers[port] = 0;
+  if (!wsUsers[PORT_STR]) {
+    wsUsers[PORT_STR] = 1;
   } else {
-    wsUsers[port]++;
+    wsUsers[PORT_STR]++;
   }
 
-  return wsServers[port];
+  return wsServers[PORT_STR];
 }
 
 //
 //
 
-export function livereloadServerPlugin(active: boolean, port = 35000): Plugin {
+export function livereloadServerPlugin(
+  active: boolean,
+  name = '',
+  port = 35000,
+): Plugin {
   if (!active) {
     return noopPlugin;
   }
 
   let lastTimeout: any = null;
+  const PORT_STR = port + '';
 
   //
   //
@@ -79,7 +87,10 @@ export function livereloadServerPlugin(active: boolean, port = 35000): Plugin {
             }
 
             wsServers[port].clients.forEach((ws) => ws.send('reload'));
-            console.log('\x1b[32m%s\x1b[0m', 'livereloading...');
+
+            const msg = name ? `livereloading ${name}...` : 'livereloading...';
+
+            console.log('\x1b[32m%s\x1b[0m', msg);
           }, 100);
         });
 
@@ -87,14 +98,14 @@ export function livereloadServerPlugin(active: boolean, port = 35000): Plugin {
         // Destroy the WebSocket server when esbuild is disposed
 
         build.onDispose(() => {
-          if (wsUsers[port] > 0) {
-            wsUsers[port]--;
+          if (wsUsers[PORT_STR] > 0) {
+            wsUsers[PORT_STR]--;
           }
 
-          if (wsUsers[port] === 0) {
-            wsServers[port].close();
-            delete wsServers[port];
-            delete wsUsers[port];
+          if (wsUsers[PORT_STR] === 0) {
+            wsServers[PORT_STR].close();
+            delete wsServers[PORT_STR];
+            delete wsUsers[PORT_STR];
           }
         });
       }
