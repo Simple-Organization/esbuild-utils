@@ -1,1 +1,1 @@
-console.log('Hello, world!');
+export { fixClassNamesPlugin } from './plugins/fixClassNamesPlugin';
