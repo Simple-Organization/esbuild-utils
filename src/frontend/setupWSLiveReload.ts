@@ -5,6 +5,8 @@ let socket: WebSocket | null = null;
 
 let tries = 0;
 
+let firstConnection = true;
+
 //
 //
 
@@ -37,10 +39,15 @@ export function setupWSLiveReload(
   //
 
   socket.onopen = () => {
-    log(
-      `Conexão com ${url} WebSocket estabelecida para livereload. Reloading in 2 seconds...`,
-    );
+    log(`Conexão com ${url} WebSocket estabelecida para livereload.`);
     tries = 0;
+
+    if (firstConnection) {
+      firstConnection = false;
+      return;
+    }
+
+    log('Recarregando a página em 2 segundos...');
 
     setTimeout(() => {
       window.location.reload();
