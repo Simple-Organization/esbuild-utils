@@ -1,4 +1,9 @@
+//
+//
+
 let socket: WebSocket | null = null;
+
+let tries = 0;
 
 //
 //
@@ -24,7 +29,6 @@ export function setupWSLiveReload(
   //
 
   const url = `${protocol}://${hostname}:${port}`;
-  let tries = 0;
 
   socket = new WebSocket(url);
 
@@ -50,7 +54,7 @@ export function setupWSLiveReload(
       'Conexão WebSocket fechada. Tentando reconectar em 3 segundos... Tentativa:',
       tries,
     );
-    
+
     socket = null;
 
     if (tries >= maxTries) {
@@ -58,6 +62,9 @@ export function setupWSLiveReload(
       return;
     }
 
-    setTimeout(() => setupWSLiveReload(port, hostname, protocol), 3000);
+    setTimeout(
+      () => setupWSLiveReload(port, hostname, protocol, maxTries),
+      3000,
+    );
   };
 }
