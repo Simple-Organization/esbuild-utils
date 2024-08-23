@@ -58,3 +58,33 @@ await esbuild.build({
   plugins: [fixClassNamesPlugin()],
 });
 ```
+
+## livereloadServerPlugin
+
+Plugin para fazer `livereload` usando websockets
+
+Exemplo de uso
+
+```ts
+await esbuild.build({
+  entryPoints: ['src/index.ts'],
+  outfile: 'dist/index.js',
+  bundle: true,
+  format: 'esm',
+  target: 'esnext',
+  platform: 'browser',
+  plugins: [
+    livereloadServerPlugin(
+      active === true, // If is active or not
+      'ts files', // Optional name for the files
+      35000, // Optional PORT for the server, default 35000
+    ),
+  ],
+});
+```
+
+### Notas
+
+Quando o `livereloadServerPlugin` está desativado, ele não importa o `ws`
+
+Cada `livereloadServerPlugin` vai compartilhar o mesmo `ws` server caso a porta seja a mesma
