@@ -1,16 +1,10 @@
-import { Plugin } from 'esbuild';
+import type { Plugin } from 'esbuild';
 import { promises as fs } from 'node:fs';
 
 //
 //
 
 export function fixClassNamesParseContent(content: string): string {
-  return content
-    .replace(/var\s+(\w+)\s+=\s+class\s+\{/g, 'class $1 ') // Remove os var SomeClass = class {
-    .replace(/\/\*\*(\s|\*)*@internal\s*\*\/\s*/g, ''); // Remove os @internal
-}
-
-export function fixClassNamesParseContent2(content: string): string {
   return content
     .replace(/var\s+(\w+)\s+=\s+class /g, 'class $1 ') // Remove os var SomeClass = class {
     .replace(/\/\*\*(\s|\*)*@internal\s*\*\/\s*/g, ''); // Remove os @internal
