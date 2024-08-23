@@ -45,9 +45,13 @@ export function setupWSLiveReload(
   };
 
   socket.onclose = () => {
-    log('Conexão WebSocket fechada. Tentando reconectar em 3 segundos...');
-
     tries++;
+    log(
+      'Conexão WebSocket fechada. Tentando reconectar em 3 segundos... Tentativa:',
+      tries,
+    );
+    
+    socket = null;
 
     if (tries >= maxTries) {
       log('Máximo de tentativas de reconexão excedido.');
