@@ -8,9 +8,9 @@ let counter = 0;
 //
 //
 
-export const noopPlugin: Plugin = {
-  name: 'noop' + counter++,
-  setup(build) {
-    // noop
-  },
-};
+export function noopPlugin(): Plugin {
+  return {
+    name: 'noop' + counter++,
+    setup() {},
+  };
+}

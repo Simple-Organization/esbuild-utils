@@ -9,7 +9,8 @@ await esbuild.build({
   bundle: true,
   outdir: 'dist',
   format: 'esm',
-  external: ['node:*'],
+  target: 'esnext',
+  external: ['node:*', 'ws'],
 });
 
 //
@@ -20,5 +21,6 @@ await esbuild.build({
   entryPoints: ['./src/frontend/index.ts'],
   bundle: true,
   outfile: 'frontend/index.js',
+  target: 'esnext',
   format: 'esm',
 });

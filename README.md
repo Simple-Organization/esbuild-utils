@@ -66,6 +66,8 @@ Plugin para fazer `livereload` usando websockets
 Exemplo de uso
 
 ```ts
+import { livereloadServerPlugin } from 'esbuild-utils';
+
 await esbuild.build({
   entryPoints: ['src/index.ts'],
   outfile: 'dist/index.js',
@@ -88,3 +90,31 @@ await esbuild.build({
 Quando o `livereloadServerPlugin` está desativado, ele não importa o `ws`
 
 Cada `livereloadServerPlugin` vai compartilhar o mesmo `ws` server caso a porta seja a mesma
+
+### No frontend
+
+```ts
+import { setupWSLiveReload } from 'esbuild-utils/frontend';
+
+// Lembre-se de não adicionar esse código na versão de produção
+if (__DEV__) {
+  setupWSLiveReload();
+}
+
+// vite version
+if (import.meta.env.DEV) {
+  setupWSLiveReload();
+}
+```
+
+`setupWSLiveReload` pode receber alguns parametros
+
+```ts
+// Demonstração com variáveis padrão
+setupWSLiveReload(
+  port = 35000,
+  hostname = location.hostname,
+  protocol = 'ws',
+  maxTries = 10,
+)
+```

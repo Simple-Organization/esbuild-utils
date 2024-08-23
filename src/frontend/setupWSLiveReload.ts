@@ -6,7 +6,7 @@ let socket: WebSocket | null = null;
 export function setupWSLiveReload(
   port = 35000,
   hostname = location.hostname,
-  protocol = 'ws',
+  protocol: 'ws' | 'wss' = 'ws',
   maxTries = 10,
 ) {
   if (socket) {

@@ -57,7 +57,7 @@ export function livereloadServerPlugin(
   port = 35000,
 ): Plugin {
   if (!active) {
-    return noopPlugin;
+    return noopPlugin();
   }
 
   let lastTimeout: any = null;
