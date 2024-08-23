@@ -112,9 +112,48 @@ if (import.meta.env.DEV) {
 ```ts
 // Demonstração com variáveis padrão
 setupWSLiveReload(
-  port = 35000,
-  hostname = location.hostname,
-  protocol = 'ws',
-  maxTries = 10,
-)
+  (port = 35000),
+  (hostname = location.hostname),
+  (protocol = 'ws'),
+  (maxTries = 10),
+);
+```
+
+## esbuildRunPlugin
+
+Plugin para fazer como `nodemon` faz para o `server`, porém pode chamar um `fetch` para fechar o processo
+
+```ts
+esbuildRunPlugin({
+  active: true,
+  cmd: 'node server.js',
+  env: {
+    PORT: '3000',
+  },
+  onexit: async () => {
+    await fetch('http://localhost:3000/exit', { method: 'POST' });
+  },
+});
+```
+
+Propriedades do `options`
+
+- `active`: Assim como no `livereload`, ele determina se o plugin está ativo ou não
+- `cmd`: O comando chamado pelo `import('child_process').spawn()`
+- `env`: Variáveis de `env` adicionadas ao `import('child_process').spawn()`
+- `onexit`: Callback chamado toda vez antes que o `import('child_process').spawn()` é destruído, normalmente para garantir que o processo é fechado corretamente
+
+## Utils
+
+### logTime
+
+Função normalmente usada para dar `console.log` do `build` do `esbuild`
+
+Exemplo:
+
+```ts
+await logTime('build-scss', async () => {
+  let ctxSCSS = await esbuild.context(buildSCSSOptions);
+  await ctxSCSS.watch();
+});
 ```
