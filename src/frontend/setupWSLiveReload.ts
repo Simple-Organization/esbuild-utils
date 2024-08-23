@@ -37,8 +37,14 @@ export function setupWSLiveReload(
   //
 
   socket.onopen = () => {
-    log(`Conexão com ${url} WebSocket estabelecida para livereload.`);
+    log(
+      `Conexão com ${url} WebSocket estabelecida para livereload. Reloading in 2 seconds...`,
+    );
     tries = 0;
+
+    setTimeout(() => {
+      window.location.reload();
+    }, 2000);
   };
 
   socket.onmessage = (event) => {
