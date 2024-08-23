@@ -73,7 +73,7 @@ export function esbuildRunPlugin(
   async function spawnServer() {
     console.log();
 
-    const { spawn } = await import('child_process');
+    const { spawn } = await import('node:child_process');
 
     const nodeProcess = spawn(cmd, {
       stdio: 'inherit' as any,
