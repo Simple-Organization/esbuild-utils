@@ -32,7 +32,7 @@ export type EsbuildRunPluginOptions = {
    * }
    * ```
    */
-  onexit?: () => void | Promise<void>;
+  onexit?: () => any;
 };
 
 //
