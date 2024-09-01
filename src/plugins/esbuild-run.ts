@@ -64,8 +64,9 @@ export function esbuildRunPlugin(
   //
 
   const env = options.env || {};
-  const onexit = options.onexit || noop;
+  const onexit: () => any = options.onexit || noop;
   const cmd = options.cmd;
+  let treekill: typeof import('tree-kill') | undefined;
 
   //
   //
@@ -90,8 +91,19 @@ export function esbuildRunPlugin(
     //
 
     return async () => {
+      treekill = treekill || (await import('tree-kill')).default;
+
+      await new Promise((resolve, reject) => {
+        treekill!(nodeProcess.pid, (error) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(true);
+          }
+        });
+      });
+      
       await onexit();
-      nodeProcess?.kill();
     };
   }
 
@@ -116,14 +128,3 @@ export function esbuildRunPlugin(
     },
   };
 }
-
-esbuildRunPlugin({
-  active: true,
-  cmd: 'node server.js',
-  env: {
-    PORT: '3000',
-  },
-  onexit: async () => {
-    await fetch('http://localhost:3000/exit', { method: 'POST' });
-  },
-});
