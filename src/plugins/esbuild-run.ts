@@ -57,7 +57,7 @@ export function esbuildRunPlugin(
 
   const noop = () => {};
 
-  let unsubChildProcess: () => void = noop;
+  let unsubChildProcess: () => any = noop;
   let lastTimeout: any = null;
 
   //
@@ -104,8 +104,8 @@ export function esbuildRunPlugin(
       //
       //
 
-      build.onEnd((result) => {
-        unsubChildProcess();
+      build.onEnd(async (result) => {
+        await unsubChildProcess();
 
         clearTimeout(lastTimeout);
 
